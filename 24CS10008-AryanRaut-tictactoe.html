@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+body{
+    font-family: Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    flex-direction:column;
+    justify-content:center;
+    min-height:100vh;
+    background: linear-gradient(135deg, #8052ec, #d161ff);
+}
+        .game{
+            align-items: center;
+            border-color: #8052ec;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(50px, min(15vw,100px)));
+            grid-template-rows: repeat(3,minmax(50px, min(15vw,100px)));
+            grid-column-gap : 10px;
+            grid-row-gap : 10px;
+            align-items: center;
+            margin : 0;
+            border-color: #d161ff; 
+        }
+
+        .cell {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: min(9.5vw,68px);
+            
+            background-color: #060070;
+            cursor: pointer;
+            font-weight : bold;
+            border-radius: 12px;
+
+            color: #fff;
+            text-shadow:
+                0 0 7px #fff
+        }
+        #status {
+                text-align: center;
+                font-size: min(7vw,45px);
+                color: azure;
+                margin-top: -10px;
+        }
+
+        .title{
+            font-size: min(8vw,56px);
+            color: rgb(255, 217, 2);
+            border-color: #060070;
+            border-width: 5px;
+            text-align: center;
+            border-color: aqua;
+        }
+        .grid1{
+            display: grid;
+            grid-template-columns: repeat(3, min(15vw,100px));
+            grid-template-rows: repeat(3, min(6vw,40px));
+            grid-column-gap : 10px;
+            grid-row-gap : 10px;
+            cursor: pointer;
+            font-weight : bold;
+            border-radius: 12px;
+            margin-top: 10px;
+            max-width: 100px;
+            border-color: aquamarine;
+            
+        }
+
+        .grid2{
+            display: grid;
+            grid-template-columns: repeat(2, min(22.5vw,150px));
+            grid-template-rows: repeat(2, min(7.5vw,50px));
+            margin-top: 20px;
+            grid-column-gap : 10px;
+            border-color: beige;
+            
+        }
+        .restart {
+            margin-right: 10px;
+            border-radius: 12px;
+            min-width: 75px;
+            font-size: min(3.5vw,22.75px);
+            border: 2px solid black;
+        }
+        .reset{
+            border-radius: 12px;
+            font-size: min(3.5vw,22.75px); 
+            min-width: 85px;
+           border: 2px solid black;
+        }
+        .a{
+            font-size: min(4vw,26px);
+            border-radius: 12px;
+        }
+        </style>
+    </head>
+    <body>
+        <p class="title"> TIC TAC TOE GAME</p>
+        <div class="game">
+            
+            <p id="status">Player X's Turn</p>
+            <div class="grid">
+                <button onclick="play(0)" class="cell c0" id="0"></button>
+                <button onclick="play(1)" class="cell c1" id="1"></button>
+                <button onclick="play(2)" class="cell c2" id="2"></button>
+                <button onclick="play(3)" class="cell c3" id="3"></button>
+                <button onclick="play(4)" class="cell c4" id="4"></button>
+                <button onclick="play(5)" class="cell c5" id="5"></button>
+                <button onclick="play(6)" class="cell c6" id="6"></button>
+                <button onclick="play(7)" class="cell c7" id="7"></button>
+                <button onclick="play(8)" class="cell c8" id="8"></button>
+            </div>
+            <div class="grid2">
+                <button onclick="restartgame()" class="restart" >Restart</button>
+                <button onclick="reset()" class="reset" >Resetscore</button>
+            </div>
+            <div class="grid1">
+                <button class="x a" ></button>
+                <button class="o a"></button>
+                <button class="tie a" ></button>
+            </div>
+
+        </div>
+        <script>
+    
+            let playermove = "X";
+            let gamestatus = "on";
+            let winner;
+            let n=0;
+            let board=['','','','','','','','',''];
+            const wincomb = [[0, 1, 2],[3, 4, 5],[6, 7, 8],
+                                        [0, 3, 6],[1, 4, 7],[2, 5, 8],
+                                        [0, 4, 8],[2, 4, 6]];
+
+
+            let b = document.querySelector("#status");
+
+            let score= JSON.parse(localStorage.getItem('score')) || { x :0, o:0,tie:0}
+            updatescore();
+
+           function play(index)
+           {
+            let a = document.querySelector(`.c${index}`);
+
+                if(gamestatus=="off" || a.innerHTML !='')
+                    return;
+
+           a.innerHTML=playermove;
+
+           if(playermove== "X")
+           {
+             playermove="O";
+             board[`${index}`]= "1";
+           }
+           else{ 
+            playermove = "X"
+            board[`${index}`]= "2";
+           }
+
+           b.innerHTML= `Player ${playermove}'s Turn `;
+           n++;
+
+           console.log(board , n);
+           checkwin();
+           }
+
+           function checkwin(){
+                for(let i=0; i<8;i++)
+                {
+                    let p1 =wincomb[i][0];
+                    let p2 =wincomb[i][1];
+                    let p3 =wincomb[i][2];
+
+                    console.log(board[p1], board[p2],board[p3]);
+
+                    if(board[p1]==1 && board[p2]==1 && board[p3]==1)
+                {   winner="X";                    
+                    console.log("player X wins");
+                    b.innerHTML=`PLAYER X WINS`;
+                    gamestatus="off";
+                    onwin(p1,p2,p3);
+                    score.x += 1;
+                    n--;
+                
+                }
+                else if(board[p1]==2 && board[p2]==2 && board[p3]==2)
+                {   winner="O";
+                    console.log("player O wins");
+                    b.innerHTML=`PLAYER O WINS`;
+                    gamestatus="off";
+                    onwin(p1,p2,p3);
+                    score.o += 1;    
+                    n--;
+                }
+                }
+                if(n===9)
+                {
+                    b.innerHTML="TIE!";
+                    score.tie += 1;
+                    document.getElementById("status").style= "color: rgb(0, 255, 255)";
+                }
+                
+                localStorage.setItem('score',JSON.stringify(score));
+
+                updatescore();
+           }
+
+            function updatescore(){
+                document.querySelector('.x').innerHTML=`X ${score.x}`
+                document.querySelector('.o').innerHTML=`O ${score.o}`
+                document.querySelector('.tie').innerHTML=`TIE ${score.tie}`
+
+            }
+
+            function onwin(a,b,c)
+            {
+                console.log(document.getElementsByClassName(`c${a}`).className,document.getElementsByClassName(`c${b}`)) 
+                document.getElementById(`${a}`).style= "background-color: rgb(0, 255, 255)";
+                document.getElementById(`${b}`).style= "background-color: rgb(0, 255, 255)";
+                document.getElementById(`${c}`).style= "background-color: rgb(0, 255, 255)";
+                document.getElementById("status").style= "color: rgb(0, 255, 255)";
+            }
+
+            function restartgame(){
+                location.reload();
+            }
+
+            function reset(){
+            score={x :0, o:0,tie:0}
+            localStorage.setItem('score',JSON.stringify(score));
+            updatescore();
+
+            }
+        </script>
+    </body>
+</html>
