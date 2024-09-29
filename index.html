@@ -158,7 +158,7 @@
 </div>
 <script >
     
-const apikey ='f00c38e0279b7bc85480c3fe775d518c'
+const apikey ='d848cf7d93757b56fa28fc366fa4e385'
 
 const url_weather ='https://api.openweathermap.org/data/2.5/weather'
 const url_coordinates = 'https://api.openweathermap.org/geo/1.0/direct'
@@ -181,7 +181,7 @@ function weatherdisplay (data){
     if(a!=0){
     document.getElementById("city-name").innerHTML = document.getElementById("city").value;
     }
-    if(data["weather"]["0"]["icon"]=="50n"){
+    if(data["weather"]["0"]["icon"]=="50d"){
         document.getElementById("main-img").src = `https://github.com/Aryan24cs50/web-dev/blob/main/images1/Mist.png?raw=true`  
     }else{
         document.getElementById("main-img").src = `https://github.com/Aryan24cs50/web-dev/blob/main/images1/${data["weather"]["0"]["main"]}.png?raw=true`}
